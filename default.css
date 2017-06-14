@@ -16,7 +16,7 @@ time, mark, audio, video {
   margin: 0;
   padding: 0;
   border: 0;
-  font: inherit;
+  /*font: inherit;*/
   font-size: 100%;
   vertical-align: baseline;
 }
@@ -283,16 +283,6 @@ slides > slide.current .gdbar {
   -o-background-size: 100% 100%;
   background-size: 100% 100%;
 }
-
-
-
-slides > slide:not(.nobackground):before {
-  width: 150px;
-  height: 50px;
-  background-size: 150px 50px;
-}
-
-
 /* line 112, ../scss/default.scss */
 slides > slide.next {
   display: block;
@@ -1116,17 +1106,6 @@ article.smaller q:before, article.smaller q:after {
   text-align: center;
 }
 
-.inline-red{
-  display:inline-block;
-  float:left;
-  color: red;
-}
-
-.centered_box {
-  text-align: center;
-  background-color: lightgrey
-}
-
 /* line 737, ../scss/default.scss */
 .reflect {
   -webkit-box-reflect: below 3px -webkit-linear-gradient(rgba(255, 255, 255, 0) 85%, white 150%);
@@ -1221,8 +1200,7 @@ article.smaller q:before, article.smaller q:after {
   left: 50%;
   top: 50%;
   cursor: pointer;
-  margin-top: -300px;
-  margin-bottom: 75px;
+  margin-top: -350px;
 }
 
 /* line 790, ../scss/default.scss */
@@ -1355,7 +1333,7 @@ aside.gdbar img {
 }
 /* line 891, ../scss/default.scss */
 .title-slide hgroup h1 {
-  font-size: 55px;
+  font-size: 65px;
   line-height: 1.4;
   letter-spacing: -3px;
   color: #515151;
@@ -1535,17 +1513,6 @@ input {
 }
 
 /* My additions */
-
-.smallest {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font: inherit;
-  font-size: 85%;
-  vertical-align: baseline;
-  line-height: 120%;
-}     
-
 .gdbar img {
   width: 500px !important;
   height: 172px !important;
@@ -1555,28 +1522,4 @@ input {
 .gdbar {
   width: 600px !important;
   height: 200px !important;
-}
-
-html, body {
-  font-size: 90%;
-}
-
-
-.smalll {
-  font-size: 75%;
-}
-
-#text1 {
-  color: red;
-  text-align: center;
-  font-size: 100%; 
-  background-color: lightgrey; 
-}
-
-#nexp {
-  color: red;
-}
-
-#nps {
-  color: red;
 }

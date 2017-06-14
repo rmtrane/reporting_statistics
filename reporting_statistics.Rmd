@@ -7,7 +7,7 @@ output:
   ioslides_presentation:
     widescreen: true
     transition: faster
-    css: css_default.css
+    css: default.css
     logo: logo/logo.png
 bibliography: biblio.bib
 biblio-style: plain
@@ -24,9 +24,9 @@ Loosely based on the SAMPL Guidelines for Biomedical Journals by Thomas Lang and
 
 From @LANG20155:
 
-**Describe statistical methods with enough detail to enable a knowledgeable reader with access to the original data to verfy the reported results.**
+***Describe statistical methods with enough detail to enable a knowledgeable reader with access to the original data to verfy the reported results.***
 
-**Provide enough detail that the results can be incorporated into other analyses.**
+***Provide enough detail that the results can be incorporated into other analyses.***
 
 Basically, make sure your analysis is reproducible to someone with the right statistical knowledge, but no prior knowledge about your work. 
 
