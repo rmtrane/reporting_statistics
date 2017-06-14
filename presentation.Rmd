@@ -1,0 +1,420 @@
+---
+title: 'Statistics in Papers/Posters'
+author: 'Ralph Trane'
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  ioslides_presentation:
+    widescreen: true
+    transition: faster
+---
+
+## TOC
+
+1. Reviewing Statistical Analyses...
+    + ... in papers
+    + ... on posters
+2. Communicating Results of Statistical Analyses
+
+
+## Main Principles
+
+Guiding Principles for Reporting: [Lang, Altman (2013)](http://www.equator-network.org/wp-content/uploads/2013/07/SAMPL-Guidelines-6-27-13.pdf),
+[STROBE by von Elm, Egger, Altman, et al. (2007)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2034723/pdf/bmj-335-7624-ac-00806.pdf),
+[Bailar, Mosteller (1988)](http://annals.org/aim/article/701108/guidelines-statistical-reporting-articles-medical-journals-amplifications-explanations).
+
+* Reproducibility
+    - methods sufficiently explained...?
+* Quantify findings and present with appropriate indicators of error/uncertainty 
+    - standard deviations, confidence intervals, etc.
+* Justify the used methods
+* P-value Issues
+    - p-hacking, reporting p-values (exact vs. inequalities), report ALL p-values
+* Good figures
+    - rule of thumb: no pie charts, no unnecessary 3D effects
+
+## Reproducibility {.build}
+
+The one big thing...
+
+... could we, if we had the data, reproduce the analysis?
+
+
+
+## Sources
+
+[Chocolate intake lowers risk of atrial fibrillation](http://heart.bmj.com/content/heartjnl/early/2017/05/01/heartjnl-2016-310357.full.pdf)
+http://www.theindependentbd.com/post/96115
+http://news.nationalpost.com/health/eating-chocolate-six-times-a-week-could-reduce-risk-of-a-fatal-heart-condition-harvard-study-says
+http://www.thesudburystar.com/2017/05/25/six-bars-of-chocolate-a-week-could-reduce-risk-of-a-fatal-heart-condition-harvard-study-says
+http://www.telegraph.co.uk/news/2017/05/23/six-bars-chocolate-week-could-cut-risk-common-heart-condition/
+[Lang, Altman (2013)](http://www.equator-network.org/wp-content/uploads/2013/07/SAMPL-Guidelines-6-27-13.pdf)
+[STROBE by von Elm, Egger, Altman, et al. (2007)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2034723/pdf/bmj-335-7624-ac-00806.pdf)
+[Bailar, Mosteller (1988)](http://annals.org/aim/article/701108/guidelines-statistical-reporting-articles-medical-journals-amplifications-explanations)
+
+[fivethirthyeight on P-hacking](https://projects.fivethirtyeight.com/p-hacking/)
+
+[The Extent and Consequences of P-hacking](http://journals.plos.org/plosbiology/article/file?id=10.1371/journal.pbio.1002106&type=printable)
+
+
+```{r include = FALSE, eval = FALSE}
+library(tidyverse)
+library(readxl)
+
+setwd('K:/Stat/RMT/Other/Statistics in Ophthalmology -- July 2017/')
+
+
+if(FALSE){
+  AGN005 <- read_excel(path = 'data/AGN005.xlsx')
+  
+  All.Data <- AGN005 %>%
+    filter(!Question %in% c("Comments", "Eligibility Comments")) %>% 
+    mutate(Question = case_when(Question %in% c('Confidence Score', 
+                                                'Confidence score', 
+                                                'OCT Confidence Score') ~ 'Confidence Score', 
+                                Question %in% c('OCT Confidence Score Reason', 
+                                                'Confidence Score Reason') ~ 'Confidence Score Reason', 
+                                Question %in% c("Choroidal thickness at centerpoint",    
+                                                "Choroidal Thickness, Center Point") ~ "Choroidal thickness at centerpoint",
+                                Question %in% c("Status of IS-OS within center subfield", 
+                                                "Status of IS-OS within central subfield",
+                                                "Status of IS-OS within Central Subfield") ~ "Status of IS-OS within central subfield",
+                                Question %in% c("Neovascular LC Presence",
+                                                "Neovascular LC presence") ~ "Neovascular LC Presence",
+                                TRUE ~ Question),
+           Answer = case_when(Answer %in% c('Cannot Grade', 'Cannot grade', 'cannot grade') ~ 'Cannot grade',
+                              TRUE ~ Answer),
+           Answer2 = vector('character', length = nrow(.)))
+
+## Neovascular LC at center point = 
+##              Measurement of neovascular lesion complex (top of lesion including RPE to Bruch's membrane) at the centerpoint
+wilcox.test(data = baseline, `Neovascular LC at center point` ~ SHRM)
+t.test(data = baseline, `Neovascular LC at center point` ~ SHRM)
+
+## 
+qqnorm(y = (baseline$`Neovascular LC at center point` - 
+              mean(baseline$`Neovascular LC at center point`, na.rm = T))/
+         sd(baseline$`Neovascular LC at center point`, na.rm = T))
+abline(a = 0, b = 1)
+
+bw <- 0.02
+mu <- mean(baseline$`Neovascular LC at center point`, na.rm = TRUE)
+sd <- sd(baseline$`Neovascular LC at center point`, na.rm = TRUE)
+n <- sum(!is.na(baseline$`Neovascular LC at center point`))
+
+baseline %>% 
+  ggplot(aes(x = `Neovascular LC at center point`)) + 
+  #geom_density(alpha = 0.5, fill = 'black') + 
+  geom_histogram(alpha = 0.5, binwidth = bw, fill = 'black', 
+                 aes(y = ..density..)) + 
+  # stat_function(geom = 'line',
+  #               fun = function(x, mu, sd, n, bw){
+  #                 dnorm(x = x, mean = mu, sd = sd)#*n*bw
+  #               }, args = c(mu = mu, sd = sd, n = n, bw = bw)) +
+  # scale_x_continuous(limits = c(-0.2, 1), breaks = seq(-0.2, 1, by = 0.2)) + 
+  theme_bw() + 
+  facet_grid(SHRM ~ .)
+
+baseline %>% 
+  ggplot(aes(x = `Neovascular LC at center point`)) + 
+  #geom_density(alpha = 0.5, fill = 'black') + 
+  geom_histogram(alpha = 0.5, binwidth = bw, fill = 'black', 
+                 aes(y = ..density..)) + 
+  stat_function(geom = 'line',
+                fun = function(x, mu, sd, n, bw){
+                  dnorm(x = x, mean = mu, sd = sd)#*n*bw
+                }, args = c(mu = mu, sd = sd, n = n, bw = bw)) +
+  scale_x_continuous(limits = c(-0.2, 1), breaks = seq(-0.2, 1, by = 0.2)) + 
+  theme_bw() + 
+  facet_grid(SHRM ~ .)
+
+baseline %>% 
+  ggplot(aes(x = log(`Neovascular LC at center point`))) + 
+  #geom_density(alpha = 0.5, fill = 'black') + 
+  geom_histogram(alpha = 0.5,
+                 fill = 'black', 
+                 aes(y = ..density..)) + 
+  stat_function(geom = 'line',
+                fun = function(x, mu, sd){
+                  dnorm(x = x, mean = mu, sd = sd)#*n*bw
+                }, args = c(mu = mean(log(baseline$`Neovascular LC at center point`), na.rm = T), 
+                            sd = sd(log(baseline$`Neovascular LC at center point`), na.rm = T))) +
+  #scale_x_continuous(limits = c(-0.2, 1), breaks = seq(-0.2, 1, by = 0.2)) +
+  theme_bw() + 
+  facet_grid(SHRM ~ .)
+
+t.test(data = baseline, log(`Neovascular LC at center point`) ~ SHRM)
+
+## Update Qs now that some have been collapsed to one
+Qs <- sort(unique(All.Data$Question))
+
+## Questions with answers outside Answer column
+# Identify those questions:
+qs <- c()
+for(q in Qs){
+  tmp <- subset(All.Data, Question == q)
+  if(length(setdiff(unique(tmp$Answer),
+                    c('', NA, 'Not applicable', 'Cannot grade'))) == 0){
+    qs <- c(qs, q)
+  }
+}
+
+# Columns possibly containing answers
+QQ <- 1
+
+pos.ans.col <- apply(subset(All.Data, Question == qs[QQ]), 2, unique)
+
+pos.ans.col2 <- lapply(pos.ans.col, FUN = function(x){
+  if(length(setdiff(x, c('', NA, 'Not applicable', 'Cannot grade'))) > 0){
+    1
+  } else {
+    0
+  }
+})
+
+
+# Find right column, put in vector
+pos.ans.col[which(pos.ans.col2 == 1)]
+qs[QQ]
+QQ <- QQ + 1
+
+Qs.with.diff.answer <- c('DistanceLength',
+                         'ThicknessSector_C',
+                         'DistanceLength')
+
+
+# Name vector as qs
+names(Qs.with.diff.answer) <- qs
+
+# Fill out that variable
+for(i in 1:nrow(All.Data)){
+  # If a rows variable is among names of Qs.with.diff.answer...
+  if(All.Data$Question[i] %in% names(Qs.with.diff.answer)){
+    # ... grab whatever is in column <Qs.with.diff.answer> and put in Answer2
+    All.Data$Answer2[i] <- All.Data[i, Qs.with.diff.answer[All.Data$Question[i]]]
+  } else {
+    # ... otherwise, copy Answer to Answer2
+    All.Data$Answer2[i] <- All.Data$Answer[i]
+  }
+}
+
+
+All.Data <- All.Data %>%
+  mutate(
+    Study_New_ID = paste(RandomizedSubjectId,
+                         TimePoint,
+                         RandomizedLaterality,
+                         Laterality,
+                         sep = '_'),
+    
+    # Study_New_ID_Perf = paste(RandomizedSubjectId,
+    #                           TimePoint,
+    #                           RandomizedLaterality,
+    #                           Laterality,
+    #                           PerformedBy,
+    #                           sep = '_'),
+    
+    Answer2 = unlist(Answer2)
+  )
+
+return.right.answer <- function(x){
+  
+  if(sum(!is.na(x$Answer2)) > 0){
+    #if(nrow(x) > 1){
+    tmp <- x[which(!is.na(x$Answer2)),]
+  } else {
+    tmp <- x
+  }
+  
+  return(tmp)
+}
+
+All.Data2 <- All.Data %>%
+  filter(!is.na(Question)) %>% 
+  mutate(SplitID = paste(Study_New_ID, Question)) %>%
+  split(.$SplitID) %>%
+  map_df(return.right.answer)
+
+save('All.Data', 'All.Data2', file = 'AllData.rda')
+
+} else {
+  
+  load(file = 'AllData.rda')
+  
+}
+
+#All.Data2
+
+d.Data <- reshape2::dcast(data = All.Data2,
+                          fun.aggregate = function(x) length(unique(x)), #function(x){ if(x$Project != 'SCORE2') sum(x != '') },
+                          Study_New_ID + RandomizedLaterality + Laterality ~ Question,
+                          value.var = 'Answer2')
+
+d.Data[which(d.Data[,Qs[which(Qs %in% colnames(d.Data))]] > 1,
+             arr.ind = TRUE)[,1],
+       which(colnames(d.Data) %in% c(Qs, 'PerformedDate', 'Study_New_ID_Perf'))] 
+
+
+Wide.Data0 <- reshape2::dcast(data = All.Data2,
+                              formula = Study_New_ID + RandomizedSubjectId + RandomizedLaterality + Laterality + TimePoint ~ Question,
+                              fun.aggregate = function(x){
+                                x[1]
+                              },
+                              value.var = 'Answer2')
+
+
+baseline <- Wide.Data0 %>% 
+  filter(TimePoint == 'Screening-Post Eligibility',
+         RandomizedLaterality == Laterality) %>% 
+  select_if(function(x) sum(!is.na(x)) > 0) %>% 
+  select(-`Comments (OCT artifacts)`, -TimePoint, -Study_New_ID, -RandomizedLaterality, -Laterality) %>% 
+  mutate(SHRM = grepl(SHRM, pattern = 'Definite'),
+         ERM = grepl(ERM, pattern = 'Definite'),
+         `Intraretinal Fluid` = grepl(`Intraretinal Fluid`, pattern = 'Definite'),
+         `Cystoid Spaces` = grepl(`Cystoid Spaces`, pattern = 'Definite'),
+         `SSRD thickness at center point` = as.numeric(`SSRD thickness at center point`),
+         `Retinal thickness grid` = as.numeric(`Retinal thickness grid`),
+         RTD = grepl(RTD, pattern = 'Definite'),
+         PVD = grepl(PVD, pattern = 'Definite'), 
+         `Neovascular LC Presence` = grepl(`Neovascular LC Presence`, pattern = 'Definite'), 
+         `Neovascular LC at center point` = as.numeric(`Neovascular LC at center point`),
+         `SSRD Presence` = grepl(`SSRD Presence`, pattern = 'Definite'),
+         `Serous/Hemorrhagic PED Presence` = grepl(`Serous/Hemorrhagic PED Presence`, pattern = 'Definite'))
+
+logReg_form <- as.formula(paste('SHRM',
+                                paste0('`',
+                                       paste(colnames(baseline)[-which(colnames(baseline) %in% c('RandomizedSubjectId', 'SHRM'))],
+                                             collapse = '` + `'),
+                                       '`'),
+                                sep = ' ~ '))
+
+baseline %>% 
+  gather(key = 'variable', value = 'value', -RandomizedSubjectId) %>% 
+  split(.$variable) %>% 
+  map(function(x) table(x$value))
+
+{SHRM_logReg_1 <-  glm(formula = SHRM ~ `Center point thickness reliable` + 
+                         `Center subfield thickness reliable` + 
+                         `Confidence Score` + 
+                         `Cystoid Spaces` + 
+                         ERM + 
+                         `Intraretinal Fluid` + 
+                         `Macular Hole` + 
+                         `Neovascular LC at center point` + 
+                         `Neovascular LC Presence` + 
+                         PVD + 
+                         `Retinal thickness grid` + 
+                         `RPE Rip/Tear` + 
+                         RTD + 
+                         `Serous/Hemorrhagic PED Presence` + 
+                         `SSRD Presence` +
+                         `SSRD thickness at center point` + 
+                         `Thickness grid reliable` +
+                         1, #update(logReg_form, . ~ . - `RPE Rip/Tear`),
+                       data = baseline,
+                       family = binomial(link = 'logit'))
+  
+  SHRM_logReg_2 <-  glm(formula = SHRM ~ `Center point thickness reliable` + 
+                          #`Center subfield thickness reliable` + 
+                          `Confidence Score` + 
+                          `Cystoid Spaces` + 
+                          ERM + 
+                          `Intraretinal Fluid` + 
+                          `Macular Hole` + 
+                          `Neovascular LC at center point` + 
+                          `Neovascular LC Presence` + 
+                          PVD + 
+                          `Retinal thickness grid` + 
+                          `RPE Rip/Tear` + 
+                          #RTD + 
+                          `Serous/Hemorrhagic PED Presence` + 
+                          #`SSRD Presence` +
+                          `SSRD thickness at center point` + 
+                          #`Thickness grid reliable` +
+                          1, #update(logReg_form, . ~ . - `RPE Rip/Tear`),
+                        data = baseline,
+                        family = binomial(link = 'logit'))
+  
+  SHRM_logReg_3 <-  glm(formula = SHRM ~ `Center point thickness reliable` + 
+                          #`Center subfield thickness reliable` + 
+                          #`Confidence Score` + 
+                          `Cystoid Spaces` + 
+                          ERM + 
+                          `Intraretinal Fluid` + 
+                          `Macular Hole` + 
+                          `Neovascular LC at center point` + 
+                          `Neovascular LC Presence` + 
+                          PVD + 
+                          `Retinal thickness grid` + 
+                          `RPE Rip/Tear` + 
+                          #RTD + 
+                          #`Serous/Hemorrhagic PED Presence` + 
+                          #`SSRD Presence` +
+                          #`SSRD thickness at center point` + 
+                          #`Thickness grid reliable` +
+                          1, #update(logReg_form, . ~ . - `RPE Rip/Tear`),
+                        data = baseline,
+                        family = binomial(link = 'logit'))
+  
+  SHRM_logReg_4 <-  glm(formula = SHRM ~ `Center point thickness reliable` + 
+                          #`Center subfield thickness reliable` + 
+                          #`Confidence Score` + 
+                          `Cystoid Spaces` + 
+                          ERM + 
+                          `Intraretinal Fluid` + 
+                          `Macular Hole` + 
+                          #`Neovascular LC at center point` + 
+                          `Neovascular LC Presence` + 
+                          PVD + 
+                          #`Retinal thickness grid` + 
+                          `RPE Rip/Tear` + 
+                          #RTD + 
+                          #`Serous/Hemorrhagic PED Presence` + 
+                          #`SSRD Presence` +
+                          #`SSRD thickness at center point` + 
+                          #`Thickness grid reliable` +
+                          1, #update(logReg_form, . ~ . - `RPE Rip/Tear`),
+                        data = baseline,
+                        family = binomial(link = 'logit'))
+  
+  SHRM_logReg_1_summary <- SHRM_logReg_1 %>% 
+    summary %>% .$coef %>% 
+    as.data.frame(., check.names = FALSE) %>% 
+    rownames_to_column %>% 
+    select(rowname, `Pr(>|z|)`)
+  
+  SHRM_logReg_2_summary <- SHRM_logReg_2 %>% 
+    summary %>% .$coef %>% 
+    as.data.frame(., check.names = FALSE) %>% 
+    rownames_to_column %>% 
+    select(rowname, `Pr(>|z|)`)
+  
+  left_join(x = SHRM_logReg_1_summary, y = SHRM_logReg_2_summary,
+            suffix = c('.1', '.2'),
+            by = 'rowname')
+  
+  }
+
+baseline %>% 
+  gather(key = 'variable', value = 'value', -RandomizedSubjectId) %>% 
+  split(.$variable) %>% 
+  map(function(x) table(x$value))
+
+t.test(formula = as.numeric(`Retinal thickness grid`)~ SHRM, data = baseline)
+
+chisq.test(x = as.factor(baseline$SHRM), 
+           y = as.factor(baseline$`Intraretinal Fluid`))
+chisq.test(x = as.factor(baseline$SHRM), 
+           y = as.factor(baseline$`Cystoid Spaces`))
+
+
+help(chisq.test)
+
+```
+
+
+
+
+
+
+
+

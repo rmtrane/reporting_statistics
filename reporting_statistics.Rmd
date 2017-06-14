@@ -1,0 +1,35 @@
+---
+title: 'The Art of Reporting Statistics'
+subtitle: 'A few guidelines'
+author: 'Ralph Trane'
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  ioslides_presentation:
+    widescreen: true
+    transition: faster
+    css: css_default.css
+    logo: logo/logo.png
+bibliography: biblio.bib
+biblio-style: plain
+---
+
+
+## Introduction/Purpose
+
+This set of slides aim at providing some guidelines for reporting statistical analyses and methods. 
+
+Loosely based on the SAMPL Guidelines for Biomedical Journals by Thomas Lang and Douglas Altman [@LANG20155].
+
+## THE General Principle 
+
+From @LANG20155:
+
+**Describe statistical methods with enough detail to enable a knowledgeable reader with access to the original data to verfy the reported results.**
+
+**Provide enough detail that the results can be incorporated into other analyses.**
+
+Basically, make sure your analysis is reproducible to someone with the right statistical knowledge, but no prior knowledge about your work. 
+
+## 
+
+## References {.smaller}

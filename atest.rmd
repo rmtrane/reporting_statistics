@@ -1,0 +1,20 @@
+---
+title: 'The Art of Reporting Statistics'
+subtitle: 'A few guidelines'
+author: 'Ralph Trane'
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: pdf_document
+bibliography: biblio.bib
+---
+  
+  
+## Introduction/Purpose
+  
+This set of slides aim at providing some guidelines for reporting statistical analyses and methods. 
+
+Loosely based on the SAMPL Guidelines for Biomedical Journals by Thomas Lang and Douglas Altman \cite{LANG20155}.
+
+## General Principle
+
+
+# References
