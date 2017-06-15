@@ -333,8 +333,8 @@ slides > slide.backdrop:after, slides > slide.backdrop:before {
 }
 /* line 180, ../scss/default.scss */
 slides > slide > hgroup + article {
-  margin-top: 45px;
-}
+  margin-top: 0.3em;                                                         /* CHANGED FROM 45px */
+} 
 /* line 184, ../scss/default.scss */
 slides > slide > hgroup + article.flexbox.vcenter, slides > slide > hgroup + article.flexbox.vleft, slides > slide > hgroup + article.flexbox.vright {
   height: 80%;
@@ -1522,4 +1522,10 @@ input {
 .gdbar {
   width: 600px !important;
   height: 200px !important;
+}
+
+slides > slide:not(.nobackground):before {
+  width: 174px;
+  height: 60px;
+  background-size: 174px 60px;
 }

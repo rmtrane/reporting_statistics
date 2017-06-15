@@ -6,9 +6,10 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
   ioslides_presentation:
     widescreen: true
+    smaller: true
     transition: faster
     css: default.css
-    logo: logo/logo.png
+    logo: logo.png
 bibliography: biblio.bib
 biblio-style: plain
 ---
@@ -20,16 +21,61 @@ This set of slides aim at providing some guidelines for reporting statistical an
 
 Loosely based on the SAMPL Guidelines for Biomedical Journals by Thomas Lang and Douglas Altman [@LANG20155].
 
-## THE General Principle 
+## THE General Principles {.build}
 
 From @LANG20155:
 
-***Describe statistical methods with enough detail to enable a knowledgeable reader with access to the original data to verfy the reported results.***
+<u>Number 1:</u> 
+
+***Describe statistical methods with enough detail to enable a knowledgeable reader with access to the original data to verfy the reported results.*** 
+
+- I.e., make sure your analysis is reproducible for someone with the right statistical knowledge, but <span style="color: red; font-weight: bold">no prior knowledge about your work</span>.
+
+<u>Number 2:</u>
 
 ***Provide enough detail that the results can be incorporated into other analyses.***
 
-Basically, make sure your analysis is reproducible to someone with the right statistical knowledge, but no prior knowledge about your work. 
+The next section is divided into two parts: the first deals with how to report the details of the statistical methods used, the second with how to report the results.
 
-## 
+## Reporting Statistical Methods | Preliminary analyses
+
+> * Study design 
+>     - Describe the study design as accurately as possible
+>     - Sample size/power calculations (if you're not convinced power calculations are necessary: check [this](https://rtrane.shinyapps.io/power/) out)
+>     - Inclusion/Exclusion criteria: if not done proberly, excluding subjects could bias results
+> * Variable transformations, new variable creation, ...
+>     - log transformed to achieve normality, mean of variables used as explanatory variable, continuous data collapsed into categories, etc.
+>     - not a bad idea to mention if NO transformations where used (depending on methods used)
+
+## Reporting Statistical Methods | Primary analyses
+
+> * Describe the purpose upfront by stating your hypothesis clearly. 
+>     - This makes p-hacking less likely to occur (more on that later)
+> * Describe the method used to test your hypothesis in full
+>     - Again, any transformations used, variables included
+> * Include descriptive statistics 
+>     - means and standard deviations 
+>     - if data is not normal, median and range/IQR (Inter Quartile Range)
+> * Justify your choice of method
+>     - Was the model validated by checking the assumptions?
+>         - Check for normality; if data not normal, use non-parametric test (Wilcoxon instead of t-test, Kuskal-Wallis instead of ANOVA, ...) <br>
+>         - Linear regression: make sure to check for normality, independence, constant variance, linearity
+> * Multiple comparisons: Adjust p-values for multiple comparisons (see more [here](http://rpubs.com/rmtrane/Hypothesis_Testing), slide 17-18)
+> * Always, always, ALWAYS specify the program used in the analysis.
+
+## Reporting Statistical Results | Numbers and Descriptive Statistics
+
+> * Report total sample and group sizes
+> * Report numerators and denominators for percentages
+>     - this makes it possible for others to use your results in their analysis
+> * Report appropriate descriptives:
+>     - for normally distributed data: means and standard deviations
+>         - report as mean (SD) rather than mean +/- SD, as it minimizes the chance of confusions (often mean +/- ... is used for confidence intervals or mean +/- SEM)
+> * 
 
 ## References {.smaller}
+
+
+
+
+
